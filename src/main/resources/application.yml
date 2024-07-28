@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: service
+
+  # Datasource
+  datasource:
+    url: jdbc:postgresql://35.207.194.224:5432/expense_db
+    username: test
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    topic:
+      name: expense_service
+    consumer:
+      group-id: expense-info-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.expense.service.consumer.ExpenseDeserializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: com.expense.service.dto.ExpenseDto
+      bootstrap-servers: 35.207.194.224:9092
+server:
+  port: 9820
