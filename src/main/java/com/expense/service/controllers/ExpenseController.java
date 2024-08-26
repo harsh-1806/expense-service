@@ -7,13 +7,12 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/expense")
+@RequestMapping("/api/v1/expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
 
@@ -22,6 +21,7 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
 
+    @GetMapping("/getExpense")
     public ResponseEntity<List<ExpenseDto>> getExpenses(
             @PathParam("user_id")
             @NonNull
@@ -33,6 +33,22 @@ public class ExpenseController {
         }
         catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/addExpense")
+    public ResponseEntity<Boolean> addExpense(
+            @RequestHeader(name = "X-User-ID")
+            String userId,
+            @RequestBody
+            ExpenseDto expenseDto
+    ) {
+        try {
+            expenseDto.setUserId(userId);
+            return new ResponseEntity<>(expenseService.createExpense(expenseDto), HttpStatus.CREATED);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
         }
     }
 

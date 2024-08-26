@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -50,5 +50,9 @@ public class Expense {
         if (this.externalId == null) {
             this.externalId = UUID.randomUUID().toString();
         }
+        if(this.createdAt == null) {
+            this.createdAt = Timestamp.from(Instant.now());
+        }
     }
+
 }
